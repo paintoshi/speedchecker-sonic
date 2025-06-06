@@ -1,8 +1,10 @@
-# Web3 Speed Checker
+# Sonic Speed Checker
 
-Compare the finality of different EVM networks
+Compare the finality of Sonic Network
 
-### Live at https://speedchecker.paintswap.io
+### Live at https://speedchecker.paintoshi.dev
+
+For comparing EVM networks, check out https://speedchecker.paintswap.io/
 
 ## Development
 

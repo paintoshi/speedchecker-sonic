@@ -218,7 +218,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>Sonic Speed Checker</title>
-        <meta name="description" content="Test and track the transaction speed of Sonic Network" />
+        <meta name="description" content="Track the transaction speed of Sonic Network" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
 
