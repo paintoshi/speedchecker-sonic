@@ -66,7 +66,7 @@ const SpeedDisplay: React.FC<SpeedDisplayProps> = ({
     <Box 
       width="100%"
       display="flex"
-      justifyContent="flex-start"
+      justifyContent="center"
       flexDirection="row"
       mt="8px"
       pb="8px"
@@ -85,10 +85,7 @@ const SpeedDisplay: React.FC<SpeedDisplayProps> = ({
             speedElementsRef.current[x.chainId] = el 
           }}
         >
-          <TextNormal style={{whiteSpace: 'nowrap'}}>{chainConfig[x.chainId]?.label ?? "N/A"}</TextNormal>
-          <TextNormal style={{whiteSpace: 'nowrap'}} fontSize="12px">
-            {`Conf: ${chainConfig[x.chainId]?.confirmations ?? "N/A"}`}
-          </TextNormal>
+          <TextNormal style={{whiteSpace: 'nowrap'}} fontSize="20px">{chainConfig[x.chainId]?.label ?? "N/A"}</TextNormal>
           <TextNormal style={{whiteSpace: 'nowrap'}} fontSize="12px">
             {x.average > 0 ? `Avg: ${Number((x.average || 0) / 1000).toFixed(1)} s` : 'Avg: -'}
           </TextNormal>

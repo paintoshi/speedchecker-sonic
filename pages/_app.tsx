@@ -8,7 +8,7 @@ import createEmotionCache from '../config/createEmotionCache'
 import ReactGA from "react-ga4"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { http, WagmiProvider } from 'wagmi'
-import { sonic, avalanche, fantom, celo, kava, arbitrum, polygon, base, optimism } from 'viem/chains'
+import { sonic } from 'viem/chains'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { AppKitNetwork } from '@reown/appkit/networks'
@@ -27,33 +27,17 @@ const gaID = env?.NEXT_PUBLIC_GA_ID || ''
 
 // 2. Create wagmiConfig
 const metadata = {
-  name: 'Speed Checker',
-  description: 'Compare the finality of different EVM networks',
+  name: 'Sonic Speed Checker',
+  description: 'Test and track transaction speeds on Sonic Network',
   url: 'https://speedchecker.paintswap.io',
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
-const fantomCustom = {
-  ...fantom,
-  rpcUrls: {
-    default: {http: ['https://rpcapi.fantom.network/'] as const},
-    public: {http: ['https://rpcapi.fantom.network/'] as const}
-   },
-}
-
-export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sonic, fantomCustom, avalanche, celo, kava, arbitrum, base, optimism, polygon]
+export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sonic]
 
 const wagmiAdapter = new WagmiAdapter({
   transports: {
     [sonic.id]: http(),
-    [fantomCustom.id]: http(),
-    [avalanche.id]: http(),
-    [celo.id]: http(),
-    [kava.id]: http(),
-    [arbitrum.id]: http(),
-    [base.id]: http(),
-    [optimism.id]: http(),
-    [polygon.id]: http(),
   },
   // connectors,
   projectId,

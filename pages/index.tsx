@@ -12,7 +12,6 @@ import Head from "next/head"
 import { wagmiConfig } from "@/pages/_app"
 import { waitForTransactionReceipt } from "@wagmi/core"
 import useNFTBalance from "@/hooks/useNFTBalance"
-import NetworkButton from "@/Components/NetworkButton"
 import useBlockNumber from "@/hooks/useBlockNumber"
 import MintingButton from "@/Components/MintingButton"
 import SpeedDisplay, { chainConfigType, SpeedList } from "@/Components/SpeedDisplay"
@@ -21,68 +20,20 @@ import { useAppKit } from "@reown/appkit/react"
 const manrope = Manrope({ subsets: ["latin"] })
 
 const nullSpeed = [
-  {chain: "Sonic", chainId: 146, speed: [], average: -1},
-  {chain: "Fantom", chainId: 250, speed: [], average: -1},
-  {chain: "Avalanche", chainId: 43114, speed: [], average: -1},
-  {chain: "Celo", chainId: 42220, speed: [], average: -1},
-  {chain: "Kava", chainId: 2222, speed: [], average: -1},
-  {chain: "Arbitrum", chainId: 42161, speed: [], average: -1},
-  {chain: "Base", chainId: 8453, speed: [], average: -1},
-  {chain: "Optimism", chainId: 10, speed: [], average: -1},
-  {chain: "Polygon", chainId: 137, speed: [], average: -1}
+  {chain: "Results", chainId: 146, speed: [], average: -1}
 ]
 
 const chainConfig: {[key: number]: chainConfigType} = {
-  250: {
-    label: "Fantom",
-    confirmations: 1,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
-  43114: {
-    label: "Avalanche",
-    confirmations: 1,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
   146: {
-    label: "Sonic",
+    label: "Results",
     confirmations: 1,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
-  42220: {
-    label: "Celo",
-    confirmations: 1,
-    contractAddress: "0xE610df966B3eD42b9251CEEAa34099736C65FFC9"
-  },
-  2222: {
-    label: "Kava",
-    confirmations: 1,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
-  42161: {
-    label: "Arbitrum One",
-    confirmations: 300,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
-  8453: {
-    label: "Base",
-    confirmations: 78,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
-  10: {
-    label: "Optimism",
-    confirmations: 78,
-    contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
-  },
-  137: {
-    label: "Polygon Pos",
-    confirmations: 50,
     contractAddress: "0x493F7909E5CA979646Abb86A81a11701420B784F"
   }
 }
 
 const Home: NextPage = () => {
   const [showAddress, setShowAddress] = useState<`0x${string}` | undefined>(undefined)
-  const [networkValue, setNetworkValue] = useState<number>(250)
+  const [networkValue, setNetworkValue] = useState<number>(146)
   const [startTime, setStartTime] = useState<number>(0)
   const [isMinting, setIsMinting] = useState(false)
   const [txSpeedsState, setTxSpeedsState] = useState<SpeedList[]>(nullSpeed)
@@ -95,16 +46,16 @@ const Home: NextPage = () => {
   const { data: blockNumber } = useBlockNumber({refresh: latestMintedBlockNumber0Conf > 0})
   const { open } = useAppKit()
   const { writeContractAsync } = useWriteContract()
-  const { data: totalNFTs, refetch: refetchNFTs } = useNFTBalance({ address, contractAddress: chainConfig[chain?.id ?? 250].contractAddress, abi: contractABI, chainId: chain?.id ?? 250 })
+  const { data: totalNFTs, refetch: refetchNFTs } = useNFTBalance({ address, contractAddress: chainConfig[chain?.id ?? 146].contractAddress, abi: contractABI, chainId: chain?.id ?? 146 })
   const hasUpdatedChainInfo = useRef(false)
 
   // Current confirmations since last mint
   const currentConfirmations = useMemo(() => {
-    if (!blockNumber || !latestMintedBlockNumber0Conf || chainConfig[chain?.id ?? 250].confirmations <= 1) {
+    if (!blockNumber || !latestMintedBlockNumber0Conf || chainConfig[chain?.id ?? 146].confirmations <= 1) {
       return 0
     }
     // If currentConfirmations exceeds confirmations, set it default chain confirmations
-    return Math.max(0, Math.min(Number(blockNumber) - latestMintedBlockNumber0Conf, chainConfig[chain?.id ?? 250].confirmations))
+    return Math.max(0, Math.min(Number(blockNumber) - latestMintedBlockNumber0Conf, chainConfig[chain?.id ?? 146].confirmations))
   }, [blockNumber, latestMintedBlockNumber0Conf, chain?.id])
 
   const isMintingLoading = useMemo(() => showAddress && isMinting, [showAddress, isMinting])
@@ -133,21 +84,21 @@ const Home: NextPage = () => {
     setIsMinting(true)
     try {
       const hash = await writeContractAsync({
-        address: chainConfig[chain?.id ?? 250].contractAddress as `0x${string}`,
+        address: chainConfig[chain?.id ?? 146].contractAddress as `0x${string}`,
         abi: contractABI,
         functionName: "mint",
         args: [],
       })
       console.info("START", Date.now())
-      console.info("Confirmations to wait for", chainConfig[chain?.id ?? 250].confirmations)
+      console.info("Confirmations to wait for", chainConfig[chain?.id ?? 146].confirmations)
       setStartTime(Date.now())
       const localStartTime = Date.now()
 
       // Reset latest minted block number
       setLatestMintedBlockNumber0Conf(0)
 
-      // If confirmations are above 1, make a simple receipt check first to save the block number
-      if (chainConfig[chain?.id ?? 250].confirmations > 1) {
+              // If confirmations are above 1, make a simple receipt check first to save the block number
+        if (chainConfig[chain?.id ?? 146].confirmations > 1) {
         let initReceipt
         for (let i = 0; i <= 120; ++i) {
           try {
@@ -173,7 +124,7 @@ const Home: NextPage = () => {
           receipt = await waitForTransactionReceipt(wagmiConfig, {
             hash: hash,
             onReplaced: (replacement) => console.info("Tx replaced:", replacement),
-            confirmations: chainConfig[chain?.id ?? 250].confirmations,
+            confirmations: chainConfig[chain?.id ?? 146].confirmations,
           })
           break
         } catch (e) {
@@ -213,21 +164,17 @@ const Home: NextPage = () => {
     console.info("WC", `${projectId?.slice(0, 4)}...`)
   }, [projectId])
 
-  // If the txSpeeds has a missing chain, add it
+  // Initialize txSpeeds with Sonic chain if missing
   useEffect(() => {
     if (hasUpdatedChainInfo.current) {
       return
     }
-    // Remove row with chainId 57054
-    const txSpeedsFixed = txSpeeds.filter((x) => x?.chainId !== 57054)
-    const missingChain = nullSpeed.find((x) => !txSpeedsFixed.find((y) => y.chainId === x.chainId))
-    if (missingChain) {
-      const newTxSpeeds = [...txSpeedsFixed, missingChain]
-      // Move chainId 146 to the top
-      newTxSpeeds.sort((a, b) => a.chainId === 146 ? -1 : b.chainId === 146 ? 1 : 0)
-      setTxSpeeds(newTxSpeeds)
-      hasUpdatedChainInfo.current = true
+    // Remove row with chainId 57054 and ensure only Sonic (146) exists
+    const txSpeedsFixed = txSpeeds.filter((x) => x?.chainId === 146)
+    if (txSpeedsFixed.length === 0) {
+      setTxSpeeds(nullSpeed)
     }
+    hasUpdatedChainInfo.current = true
   }, [txSpeeds, setTxSpeeds])
 
   useEffect(() => {
@@ -254,45 +201,47 @@ const Home: NextPage = () => {
     }
   }, [txSpeeds])
 
-  // Reset everything when the network changes
+  // Reset everything when the network changes to non-Sonic
   useEffect(() => {
-    if (chain?.id && chain?.id !== networkValue) {
-      setNetworkValue(chain.id)
+    if (chain?.id && chain?.id !== 146) {
+      // User switched to non-Sonic network, reset state
       setIsMinting(false)
       setStartTime(0)
       handleResetTime()
       setLatestMintedBlockNumber0Conf(0)
+    } else if (chain?.id === 146 && chain?.id !== networkValue) {
+      setNetworkValue(146)
     }
-  }, [chain?.id, networkValue, setIsMinting, setStartTime, handleResetTime, setLatestMintedBlockNumber0Conf])
+  }, [chain?.id, networkValue, handleResetTime])
 
   return (
     <>
       <Head>
-        <title>Web3 Speed Checker</title>
-        <meta name="description" content="Compare the finality of different EVM networks" />
+        <title>Sonic Speed Checker</title>
+        <meta name="description" content="Test and track the transaction speed of Sonic Network" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
 
-        <meta name="keywords" content="fantom, sonic, $S, evm, fvm, testnet, transactions, speed, tps, finality, confirmations, fast, crypto, base, arbitrum, optimism, polygon, avalanche, celo, kava" />
+        <meta name="keywords" content="sonic, $S, evm, fvm, testnet, transactions, speed, tps, finality, confirmations, fast, crypto" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Web3 Speed Checker - Test the speed of EVM chains" />
+        <meta name="twitter:title" content="Sonic Speed Checker - Test Sonic Network Speed" />
         <meta name="twitter:image" content="https://speedchecker.paintswap.io/og_v2.png" />
         <meta name="twitter:domain" content="speedchecker.paintswap.io" />
         <meta name="twitter:site" content="@paintoshi" />
         <meta name="twitter:creator" content="@paintoshi" />
-        <meta name="twitter:description" content="Compare the finality of different EVM networks" />
+        <meta name="twitter:description" content="Test and track the transaction speed of Sonic Network" />
 
-        <meta property="og:title" content="Web3 Speed Checker - Test the speed of EVM chains" />
-        <meta property="og:description" content="Compare the finality of different EVM networks" />
+        <meta property="og:title" content="Sonic Speed Checker - Test Sonic Network Speed" />
+        <meta property="og:description" content="Test and track the transaction speed of Sonic Network" />
         <meta property="og:image" content="https://speedchecker.paintswap.io/og_v2.png" />
         <meta property="og:url" content="https://speedchecker.paintswap.io" />
       </Head>
       <main className={`${styles.main} ${manrope.className}`}>
         <div className={styles.center}>
           <div className={styles.mainPanel}>
-            <h1 className={styles.title}>Web3 Speed Checker</h1>
+            <h1 className={styles.title}>Sonic Speed Checker</h1>
             <p className={styles.titleSub}>
-              Compare the finality of different EVM networks<br />
+              Track transaction speeds on Sonic Network<br />
             </p>
             <Stack width="100%" direction={{xs: "column", sm: "row"}} alignItems="center" justifyContent="center" spacing={2}>
               {showAddress && (
@@ -301,7 +250,6 @@ const Home: NextPage = () => {
               {!showAddress && (
                 <Button size="large" className={styles.mainButton} variant='contained' color="primary" onClick={() => open()}>Connect Wallet</Button>
               )}
-              <NetworkButton />
             </Stack>
             <Box width="100%" mt="16px" mb="16px">
               <Divider />
@@ -317,7 +265,7 @@ const Home: NextPage = () => {
               isMintingLoading={isMintingLoading}
               startTime={startTime}
             />
-            {chainConfig[chain?.id ?? 250].confirmations > 1 && (
+            {chainConfig[chain?.id ?? 146].confirmations > 1 && (
               <Box mt="8px">
                 <TextSubtle fontSize="14px">
                 {`Confirmations: ${currentConfirmations} / ${chain?.id ? chainConfig[chain?.id].confirmations : "N/A"}`}
@@ -341,7 +289,7 @@ const Home: NextPage = () => {
               <Divider />
             </Box>
             <Box mb="0">
-              <a href="https://github.com/PaintSwap/speedchecker-frontend" target="_blank">Github Source</a>
+              <a href="https://github.com/Paintoshi/speedchecker-sonic" target="_blank">Github Source</a>
             </Box>
           </div>
         </div>
